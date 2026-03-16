@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>求人検索 | れいわキャリア</title>
+<meta name="description" content="れいわキャリアの転職・求人情報を検索できます。気になる求人はLINEで相談、または応募フォームから応募できます。" />
+<!-- OGP -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="求人検索 | れいわキャリア" />
+<meta property="og:description" content="れいわキャリアの転職・求人情報を検索。LINEで無料相談、または応募フォームから応募できます。" />
+<meta property="og:image" content="" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+--primary: #FFFFFF;
+--primary-light: #F4F5F7;
+--on-primary: #172B4D;
+--sub: #FEE858;
+--sub-soft: #FFF7C2;
+--on-sub: #172B4D;
+--accent: #FF5630;
+--text: #172B4D;
+--text-muted: #6B778C;
+--border: #DFE1E6;
+--bg: #F4F5F7;
+--white: #FFFFFF;
+--tag-bg: #FFF7C2;
+--tag-color: #7A5B00;
+--success: #00875A;
+--card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+--card-shadow-hover: 0 4px 16px rgba(254,232,88,0.35);
+    }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+header { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.logo-img {
+height: 32px;          /* ヘッダーCTAと同等の視認性 */
+width: 180px;
+display: block;
+object-fit: cover;      /* 横長ロゴを左側で見せる */
+object-position: left center;
+    }
+.header-nav { display: flex; gap: 24px; align-items: center; }
+.header-nav a { color: var(--text-muted); text-decoration: none; font-size: 13px; }
+.btn-line { background: #06C755; color: white; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+/* 検索エリア背景はフラットに（グラデーション廃止） */
+.page-hero { background: var(--white); padding: 28px 24px; color: var(--text); border-bottom: 1px solid var(--border); }
+.page-hero-inner { max-width: 1200px; margin: 0 auto; }
+.page-hero h1 { font-size: 24px; font-weight: 900; margin-bottom: 6px; }
+.page-hero p { font-size: 13px; opacity: 0.85; }
+.badge-count { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-left: 8px; }
+.search-bar { background: white; border-radius: 10px; padding: 14px 16px; margin-top: 20px; display: flex; gap: 10px; align-items: center; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+.search-input { flex: 1; border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 14px; font-size: 14px; font-family: 'Noto Sans JP', sans-serif; outline: none; color: var(--text); }
+.search-input:focus { border-color: var(--sub); }
+.search-select { border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 14px; font-size: 13px; font-family: 'Noto Sans JP', sans-serif; outline: none; color: var(--text); background: white; min-width: 160px; }
+.btn-search { background: var(--sub); color: var(--on-sub); border: none; border-radius: 6px; padding: 10px 24px; font-size: 14px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; }
+.btn-search:hover { filter: brightness(0.95); }
+.filter-row { background: white; border-bottom: 1px solid var(--border); padding: 10px 0; }
+.filter-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.filter-label { font-size: 12px; color: var(--text-muted); margin-right: 4px; white-space: nowrap; }
+.filter-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--tag-bg); color: var(--tag-color); border: 1px solid rgba(254,232,88,0.55); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.filter-tag:hover, .filter-tag.active { background: var(--sub); color: var(--on-sub); border-color: var(--sub); }
+.main-wrap { max-width: 1200px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 260px 1fr; gap: 20px; align-items: start; }
+.sidebar { position: sticky; top: 80px; }
+.sidebar-card { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; }
+.sidebar-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--sub); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sidebar-title button { border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 4px 6px; }
+.checkbox-item { display: flex; align-items: center; gap: 8px; padding: 5px 0; cursor: pointer; font-size: 13px; }
+.checkbox-item input[type="checkbox"] { accent-color: var(--sub); width: 15px; height: 15px; }
+.sidebar-actions { display: flex; gap: 8px; }
+.btn-ghost { border: 1.5px solid var(--border); background: white; color: var(--text); border-radius: 8px; padding: 10px 12px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
+.btn-ghost:hover { border-color: var(--sub); color: #7A5B00; }
+.list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 12px; }
+.result-count { font-size: 13px; color: var(--text-muted); }
+.result-count strong { color: var(--text); font-size: 16px; }
+.sort-select { border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-family: 'Noto Sans JP', sans-serif; color: var(--text); background: white; cursor: pointer; outline: none; }
+.job-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 12px; cursor: pointer; transition: box-shadow 0.2s, border-color 0.2s, transform 0.1s; box-shadow: var(--card-shadow); position: relative; }
+.job-card:hover { box-shadow: var(--card-shadow-hover); border-color: rgba(254,232,88,0.75); transform: translateY(-1px); }
+.job-card.featured { border-left: 4px solid var(--accent); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.job-company { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.job-title { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.4; }
+.job-salary { white-space: nowrap; font-size: 18px; font-weight: 700; color: var(--accent); text-align: right; }
+.job-salary small { font-size: 11px; color: var(--text-muted); display: block; font-weight: 400; }
+.job-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
+.job-tag { background: var(--tag-bg); color: var(--tag-color); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 500; }
+.job-meta { display: flex; align-items: center; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--bg); }
+.meta-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-muted); }
+.card-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.btn-detail { background: var(--sub); color: var(--on-sub); border: none; border-radius: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; }
+.btn-line-apply { background: #06C755; color: white; border: none; border-radius: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; }
+.btn-apply { background: white; color: var(--text); border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; }
+.btn-apply:hover { border-color: var(--sub); color: #7A5B00; }
+.new-badge { position: absolute; top: -1px; right: 16px; background: var(--accent); color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 0 0 6px 6px; }
+.loading { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.loading-spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--sub); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-box { background: #fff3f0; border: 1px solid #ffbdad; border-radius: 10px; padding: 16px; color: var(--accent); font-size: 13px; }
+.error-box strong { display: block; margin-bottom: 6px; }
+.error-cta { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+.pagination { display: flex; justify-content: center; gap: 6px; margin-top: 24px; flex-wrap: wrap; }
+.page-btn { min-width: 38px; height: 38px; padding: 0 10px; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; background: white; color: var(--text); font-family: 'Noto Sans JP', sans-serif; transition: all 0.15s; }
+.page-btn:hover { border-color: var(--sub); color: #7A5B00; }
+.page-btn.active { background: var(--sub); color: var(--on-sub); border-color: var(--sub); }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(9,30,66,0.54); z-index: 200; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
+.modal-overlay.open { display: flex; }
+.modal { background: white; border-radius: 12px; width: 100%; max-width: 760px; position: relative; animation: slideUp 0.2s ease; }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: var(--bg); border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+.modal-header { padding: 28px 28px 20px; border-bottom: 1px solid var(--border); }
+.modal-company { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+.modal-title { font-size: 20px; font-weight: 900; line-height: 1.4; margin-bottom: 12px; }
+.modal-salary { font-size: 24px; font-weight: 700; color: var(--accent); }
+.modal-body { padding: 24px 28px; }
+.section-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; margin-top: 20px; padding-left: 10px; border-left: 3px solid var(--sub); }
+.section-title:first-child { margin-top: 0; }
+.info-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+.info-table tr { border-bottom: 1px solid var(--bg); }
+.info-table th { width: 140px; padding: 8px 10px; font-size: 12px; color: var(--text-muted); font-weight: 500; text-align: left; background: var(--bg); }
+.info-table td { padding: 8px 10px; font-size: 13px; }
+.modal-desc { font-size: 13px; line-height: 1.8; white-space: pre-wrap; }
+.modal-footer { padding: 20px 28px; border-top: 1px solid var(--border); display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-wide { width: 100%; }
+/* Form */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-field { display: flex; flex-direction: column; gap: 6px; }
+.form-field.full { grid-column: 1 / -1; }
+.form-label { font-size: 12px; color: var(--text-muted); }
+.form-label b { color: var(--accent); font-weight: 900; margin-left: 4px; }
+.form-input, .form-select, .form-textarea {
+border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px;
+font-family: 'Noto Sans JP', sans-serif; outline: none; background: white; color: var(--text);
+    }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--sub); }
+.form-textarea { min-height: 100px; resize: vertical; }
+.form-note { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+.btn-primary { background: var(--sub); color: var(--on-sub); border: none; border-radius: 8px; padding: 14px; font-size: 15px; font-weight: 900; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; }
+.btn-primary:hover { filter: brightness(0.95); }
+.btn-success { background: #06C755; color: white; border: none; border-radius: 8px; padding: 14px; font-size: 15px; font-weight: 900; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; }
+.btn-success:hover { filter: brightness(0.95); }
+.form-alert { background: #fff3f0; border: 1px solid #ffbdad; color: var(--accent); border-radius: 10px; padding: 12px 14px; font-size: 13px; display: none; }
+.form-alert.show { display: block; }
+.form-submitting { opacity: 0.65; pointer-events: none; }
+@media (max-width: 992px) {
+.main-wrap { grid-template-columns: 1fr; }
+.sidebar { position: static; }
+.search-bar { flex-wrap: wrap; }
+    }
+.fab-apply {
+display: none;
+position: fixed;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 150;
+background: var(--accent);
+color: white;
+border: none;
+border-radius: 30px;
+padding: 14px 48px;
+font-size: 16px;
+font-weight: 700;
+font-family: 'Noto Sans JP', sans-serif;
+cursor: pointer;
+box-shadow: 0 4px 20px rgba(255,86,48,0.45);
+white-space: nowrap;
+align-items: center;
+gap: 8px;
+    }
+.fab-apply:active { filter: brightness(0.92); }
+@media (max-width: 768px) {
+.header-nav { display: none; }
+.modal-overlay { padding: 0; align-items: stretch; }
+.modal { max-width: none; border-radius: 0; min-height: 100vh; }
+.modal-header { padding: 22px 18px 16px; }
+.modal-body { padding: 18px; }
+.modal-footer { padding: 16px 18px; }
+.form-grid { grid-template-columns: 1fr; }
+.info-table th { width: 120px; }
+.fab-apply { display: flex; }
+.pagination { margin-bottom: 90px; }
+    }
+</style>
+</head>
+<body>
+<header>
+<div class="header-inner">
+<a href="#" class="logo" onclick="scrollToTop(event)" aria-label="れいわキャリア">
+<img class="logo-img" src="./れいきゃりロゴ/1.png" alt="れいわキャリア">
+</a>
+<nav class="header-nav">
+<a href="#" onclick="scrollToTop(event)">求人を探す</a>
+<a href="#" onclick="openLine(event)" class="btn-line">LINEで無料相談</a>
+</nav>
+</div>
+</header>
+<div class="page-hero">
+<div class="page-hero-inner">
+<h1>求人検索 <span class="badge-count" id="totalCount">読込中...</span></h1>
+<p>あなたにピッタリな非公開求人をチェック。<br>詳細や応募希望は面談から</p>
+<div class="search-bar">
+<input class="search-input" id="searchInput" type="text" placeholder="会社名・職種・仕事内容で検索">
+<select class="search-select" id="locationFilter">
+<option value="">勤務地（全国）</option>
+</select>
+<button class="btn-search" id="searchBtn">検索する</button>
+</div>
+</div>
+</div>
+<div class="filter-row">
+<div class="filter-inner">
+<span class="filter-label">こだわりタグ：</span>
+<div id="tagFilterRow" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+</div>
+</div>
+<div class="main-wrap">
+<aside class="sidebar">
+<div class="sidebar-card">
+<div class="sidebar-title">
+<span>絞り込み</span>
+<div class="sidebar-actions">
+<button class="btn-ghost" type="button" onclick="resetFilters()">リセット</button>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div>
+<div class="sidebar-title" style="border-bottom:none;margin-bottom:6px;padding-bottom:0">
+<span>月給帯（下限）</span>
+<button type="button" onclick="toggleAllInGroup('salaryGroup', false)">クリア</button>
+</div>
+<div id="salaryGroup">
+<label class="checkbox-item"><input type="checkbox" data-salary="18"> 18万円〜</label>
+<label class="checkbox-item"><input type="checkbox" data-salary="20"> 20万円〜</label>
+<label class="checkbox-item"><input type="checkbox" data-salary="23"> 23万円〜</label>
+<label class="checkbox-item"><input type="checkbox" data-salary="25"> 25万円〜</label>
+<label class="checkbox-item"><input type="checkbox" data-salary="30"> 30万円〜</label>
+</div>
+</div>
+<div>
+<div class="sidebar-title" style="border-bottom:none;margin-bottom:6px;padding-bottom:0">
+<span>職種</span>
+<button type="button" onclick="toggleAllInGroup('typeGroup', false)">クリア</button>
+</div>
+<div id="typeGroup">
+<label class="checkbox-item"><input type="checkbox" class="job-type-cb" data-type="営業職"> 営業職</label>
+<label class="checkbox-item"><input type="checkbox" class="job-type-cb" data-type="事務・管理"> 事務・管理</label>
+<label class="checkbox-item"><input type="checkbox" class="job-type-cb" data-type="販売・サービス"> 販売・サービス</label>
+<label class="checkbox-item"><input type="checkbox" class="job-type-cb" data-type="施工管理"> 施工管理</label>
+<label class="checkbox-item"><input type="checkbox" class="job-type-cb" data-type="ドライバー"> ドライバー</label>
+</div>
+</div>
+<div>
+<div class="sidebar-title" style="border-bottom:none;margin-bottom:6px;padding-bottom:0">
+<span>雇用形態</span>
+<button type="button" onclick="toggleAllInGroup('employmentGroup', false)">クリア</button>
+</div>
+<div id="employmentGroup"></div>
+</div>
+</div>
+</div>
+</aside>
+<div>
+<div class="list-header">
+<div class="result-count"><strong id="displayCount">-</strong>件の求人が見つかりました</div>
+<select class="sort-select" id="sortSelect">
+<option value="featured">おすすめ順</option>
+<option value="new">新着順</option>
+</select>
+</div>
+<div id="jobList">
+<div class="loading">
+<div class="loading-spinner"></div>
+          求人データを読み込み中...
+</div>
+</div>
+<div class="pagination" id="pagination"></div>
+</div>
+</div>
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+<div class="modal">
+<button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+<div class="modal-header">
+<div class="modal-company" id="modalCompany"></div>
+<div class="modal-title" id="modalTitle"></div>
+<div class="job-tags" id="modalTags"></div>
+<div class="modal-salary" id="modalSalary"></div>
+</div>
+<div class="modal-body">
+<div class="section-title">勤務地</div>
+<p class="modal-desc" id="modalLocation"></p>
+<div class="section-title">仕事内容</div>
+<p class="modal-desc" id="modalDesc"></p>
+<div class="section-title">雇用条件</div>
+<table class="info-table" id="modalTable"></table>
+</div>
+<div class="modal-footer">
+<button class="btn-primary btn-wide" onclick="openCalendar()">この求人に応募する</button>
+</div>
+</div>
+</div>
+<!-- APPLY MODAL -->
+<div class="modal-overlay" id="applyModal">
+<div class="modal">
+<button class="modal-close" onclick="closeModal('applyModal')">✕</button>
+<div class="modal-header">
+<div class="modal-title" style="margin-bottom:6px">応募フォーム</div>
+<div class="modal-company" id="applyJobTitle"></div>
+</div>
+<div class="modal-body">
+<div class="form-alert" id="applyAlert"></div>
+<form id="applyForm">
+<div class="form-grid">
+<div class="form-field full">
+<div class="form-label">応募した求人名（自動）</div>
+<input class="form-input" id="f_jobTitle" type="text" readonly />
+</div>
+<div class="form-field">
+<div class="form-label">お名前<b>必須</b></div>
+<input class="form-input" id="f_name" type="text" autocomplete="name" required />
+</div>
+<div class="form-field">
+<div class="form-label">年齢<b>必須</b></div>
+<select class="form-select" id="f_age" required>
+<option value="">選択してください</option>
+<option>18〜22歳</option>
+<option>23〜25歳</option>
+<option>26〜29歳</option>
+<option>30〜34歳</option>
+<option>35歳以上</option>
+</select>
+</div>
+<div class="form-field">
+<div class="form-label">電話番号<b>必須</b></div>
+<input class="form-input" id="f_phone" type="tel" autocomplete="tel" inputmode="tel" required />
+</div>
+<div class="form-field">
+<div class="form-label">メールアドレス<b>必須</b></div>
+<input class="form-input" id="f_email" type="email" autocomplete="email" inputmode="email" required />
+</div>
+<div class="form-field full">
+<div class="form-label">現在の状況（任意）</div>
+<select class="form-select" id="f_status">
+<option value="">選択しない</option>
+<option>在職中</option>
+<option>離職中</option>
+<option>迷い中</option>
+</select>
+</div>
+<div class="form-field full">
+<div class="form-label">自由記入欄（任意）</div>
+<textarea class="form-textarea" id="f_note" placeholder="ご希望や気になる点があればご記入ください。"></textarea>
+</div>
+</div>
+<div class="form-note">送信後、担当者よりご連絡します。すぐに相談したい場合はLINEからもご連絡ください。</div>
+</form>
+</div>
+<div class="modal-footer">
+<button class="btn-primary btn-wide" id="applySubmitBtn" onclick="submitApply()">フォームを送信</button>
+<button class="btn-success btn-wide" onclick="openLine()">LINEで無料相談</button>
+</div>
+</div>
+</div>
+<!-- スマホ固定フローティングボタン -->
+<button class="fab-apply" onclick="openCalendar()">📅 面談を予約する</button>
+<script>
+// ============================================================
+// ★設定エリア★ — GASデプロイ後にここを更新してください
+// ============================================================
+const GAS_URL      = "https://script.google.com/macros/s/AKfycbwF_pqCTBQy6vpjw3ZPBPmiFGQ7O7DiAOnDgXaRDQVNGqm3eMO72A4Mr7F4QXNotJuSUQ/exec";
+const LINE_URL     = "https://liff.line.me/2008784499-92DR4hmy/landing?follow=%40872lluqj&lp=yrdfyz&liff_id=2008784499-92DR4hmy";
+const CALENDAR_URL = "https://liff.line.me/2008784499-Zctss9VZ?liff_id=2008784499-Zctss9VZ&is=Ob0XQfUM5Q";
+// ============================================================
+const PAGE_SIZE = 12; // 10〜20の範囲で調整可
+// ── サンプルデータ（GAS_URL 未設定時に使用）──────────────────
+const EMBEDDED_JOBS = [
+      {
+id: 1,
+company: "東京・日本交通株式会社",
+title: "【タクシードライバー（VIP運転手候補）・未経験OK】研修充実・二種免許の取得支援あり",
+salary: "月給18万〜40万円",
+location: "大阪府大阪市 / 兵庫県神戸市 他",
+tags: ["✨ 未経験OK", "🚗 車通勤OK", "📍 転勤なし"],
+desc: "お客様を目的地まで安全・快適に送迎するお仕事です。将来的にはVIP層の送迎を担当するハイグレード乗務員へキャリアアップ可能。二種免許は会社全額負担で取得できます。",
+conditions: [["雇用形態","正社員"],["給与","月給18万〜40万円"],["勤務時間","シフト制"],["休日","週2日以上"],["免許","取得支援あり（全額会社負担）"]],
+isNew: true, featured: true
+      },
+      {
+id: 2,
+company: "株式会社エフ・オー・プランニング",
+title: "【札幌】家電製品のアドバイザー／賞与年2回／残業少なめ／未経験可",
+salary: "月給19万円〜",
+location: "北海道（札幌エリア）",
+tags: ["✨ 未経験OK", "📍 転勤なし", "🍵 残業20h以内"],
+desc: "インストアプロモーションとして来店されたお客様へ家電・スマートフォンなどの商品案内を行います。慣れてきたらチームのマネジメントや企画立案も担当いただきます。",
+conditions: [["雇用形態","正社員"],["給与","月給19万円〜"],["勤務地","北海道（函館本線沿線）"],["賞与","年2回"],["残業","月20時間以内"]],
+isNew: false, featured: false
+      },
+      {
+id: 3,
+company: "株式会社ウィルオブ・ワーク",
+title: "【MO首都圏】モバイル販売スタッフ（東京・神奈川・千葉・埼玉）",
+salary: "月給23万〜28万円",
+location: "東京都 / 神奈川県 / 千葉県 / 埼玉県",
+tags: ["✨ 未経験OK", "🏢 上場企業", "🚗 車通勤OK", "📍 転勤なし", "🍵 残業20h以内"],
+desc: "家電量販店・携帯ショップでのスマートフォンなど通信商材を販売する完全内勤のお仕事です。お客様へのご案内から販売・提案、売場レイアウト・在庫管理まで幅広く担当いただきます。",
+conditions: [["雇用形態","正社員"],["給与","月給23万〜28万円"],["勤務地","首都圏4都県"],["休日","週2日"],["特徴","上場企業・完全内勤"]],
+isNew: true, featured: false
+      },
+      {
+id: 4,
+company: "DSP株式会社",
+title: "法人営業職（BtoBインサイドセールス）広告・SaaS・ECサイト等の提案営業/土日祝休み",
+salary: "月給22〜23万円",
+location: "東京都渋谷区（千駄ケ谷・原宿エリア）",
+tags: ["✨ 未経験OK", "📍 転勤なし", "🗓️ 土日祝休み", "🍵 残業20h以内"],
+desc: "企業様の悩みを解決する提案営業をインサイドセールスで行います。メディア広告・ECサイト・業務DXなど幅広い商材を扱い、アポイント取得から商談まで担当します。",
+conditions: [["雇用形態","正社員"],["給与","月給22〜23万円"],["勤務時間","9:00〜18:00"],["休日","土日祝"],["スタイル","完全インサイドセールス"]],
+isNew: false, featured: false
+      },
+      {
+id: 5,
+company: "羽田空港サービス株式会社",
+title: "【未経験可】ANA飛行機への荷物・貨物搬入【グランドハンドリング】",
+salary: "月給20〜25万円",
+location: "東京都大田区（羽田空港）",
+tags: ["✨ 未経験OK", "📍 転勤なし", "🛏️ 社員寮あり", "🌴 年休120日以上", "🍵 残業20h以内"],
+desc: "日本を代表する空の玄関口・羽田空港でグランドハンドリング業務をお任せします。手荷物・貨物の搭載・取り降ろしが主な業務です。先輩の9割が未経験スタートです。",
+conditions: [["雇用形態","正社員"],["給与","月給20〜25万円"],["勤務地","羽田空港"],["寮","社員寮完備"],["年休","120日以上"]],
+isNew: false, featured: false
+      }
+];
+let allJobs = [];
+let currentJob = null;
+let lastFiltered = [];
+let currentPage = 1;
+// ── Utility ───────────────────────────────────────────────
+function esc(str) {
+return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+function openLine(e) {
+if (e && e.preventDefault) e.preventDefault();
+window.open(LINE_URL, '_blank');
+    }
+function openCalendar(e) {
+if (e && e.preventDefault) e.preventDefault();
+if (CALENDAR_URL) window.open(CALENDAR_URL, '_blank');
+    }
+function scrollToTop(e) {
+if (e && e.preventDefault) e.preventDefault();
+window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+function closeModal(id) {
+document.getElementById(id).classList.remove('open');
+if (!document.querySelector('.modal-overlay.open')) document.body.style.overflow = '';
+    }
+function openModal(id) {
+document.getElementById(id).classList.add('open');
+document.body.style.overflow = 'hidden';
+    }
+function toggleAllInGroup(groupId, checked) {
+const el = document.getElementById(groupId);
+[...el.querySelectorAll('input[type="checkbox"]')].forEach(cb => { cb.checked = checked; });
+applyFilters(true);
+    }
+// ── Data fetch ────────────────────────────────────────────
+async function fetchJobs() {
+if (GAS_URL && GAS_URL.length > 10) {
+try {
+const res = await fetch(GAS_URL, { method: 'GET' });
+if (!res.ok) throw new Error("通信エラー");
+const data = await res.json();
+if (!data || data.status !== "ok" || !Array.isArray(data.jobs)) {
+throw new Error((data && data.message) ? data.message : "データ取得失敗");
+          }
+allJobs = data.jobs;
+        } catch (err) {
+renderApiError(err && err.message ? err.message : String(err));
+allJobs = EMBEDDED_JOBS;
+        }
+      } else {
+allJobs = EMBEDDED_JOBS;
+      }
+document.getElementById('totalCount').textContent = allJobs.length + "件";
+buildDynamicFilters(allJobs);
+applyFilters(true);
+    }
+function renderApiError(message) {
+const list = document.getElementById('jobList');
+list.innerHTML = `
+        <div class="error-box">
+          <strong>求人データの取得に失敗しました</strong>
+${esc(message || 'ネットワークの状態をご確認ください。')}<br/>
+          表示はサンプルデータに切り替えています。LINEからの相談は引き続き可能です。
+          <div class="error-cta">
+            <button class="btn-success" onclick="openLine()">LINEで無料相談</button>
+          </div>
+        </div>
+      `;
+    }
+// ── Filters building ───────────────────────────────────────
+function extractPrefecture(locationStr) {
+const s = String(locationStr || "");
+const m = s.match(/(北海道|東京都|大阪府|京都府|[^、,\/\s]{2,3}県)/);
+return m ? m[1] : "";
+    }
+function getEmploymentType(job) {
+const rows = Array.isArray(job.conditions) ? job.conditions : [];
+for (const pair of rows) {
+if (!Array.isArray(pair) || pair.length < 2) continue;
+const k = String(pair[0] || "").trim();
+if (k === "雇用形態") return String(pair[1] || "").trim();
+      }
+return "";
+    }
+function buildDynamicFilters(jobs) {
+// Location dropdown（全47都道府県固定リスト）
+const ALL_PREFECTURES = [
+  "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県",
+  "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",
+  "新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県",
+  "静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県",
+  "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県",
+  "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県",
+  "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
+];
+const loc = document.getElementById('locationFilter');
+const current = loc.value;
+loc.innerHTML = `<option value="">勤務地（全国）</option>` + ALL_PREFECTURES.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+if (ALL_PREFECTURES.includes(current)) loc.value = current;
+// Tag chips (curated order if exists)
+const tagCounts = new Map();
+jobs.forEach(j => (j.tags || []).forEach(t => {
+const key = String(t || '').trim();
+if (!key) return;
+tagCounts.set(key, (tagCounts.get(key) || 0) + 1);
+      }));
+const preferred = [
+"✨ 未経験OK",
+"📍 転勤なし",
+"🗓️ 土日祝休み",
+"🌴 年休120日以上",
+"🍵 残業20h以内",
+"🏢 上場企業",
+"🚗 車通勤OK",
+"🛏️ 社員寮あり"
+];
+const rest = [...tagCounts.keys()].filter(t => !preferred.includes(t)).sort((a,b) => (tagCounts.get(b)-tagCounts.get(a)));
+const tags = preferred.filter(t => tagCounts.has(t)).concat(rest).slice(0, 12);
+const row = document.getElementById('tagFilterRow');
+row.innerHTML = tags.map(t => `<span class="filter-tag" data-tag="${esc(t)}">${esc(t)}</span>`).join('');
+row.querySelectorAll('.filter-tag').forEach(tagEl => tagEl.addEventListener('click', () => {
+tagEl.classList.toggle('active');
+applyFilters(true);
+      }));
+// Employment type checkboxes
+const types = new Set();
+jobs.forEach(j => {
+const t = getEmploymentType(j);
+if (t) types.add(t);
+      });
+const emp = document.getElementById('employmentGroup');
+emp.innerHTML = [...types].sort().map(t =>
+`<label class="checkbox-item"><input type="checkbox" class="employment-cb" data-employment="${esc(t)}"> ${esc(t)}</label>`
+      ).join('') || `<div style="font-size:12px;color:var(--text-muted)">（データに雇用形態がありません）</div>`;
+emp.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', () => applyFilters(true)));
+    }
+// ── Matching ───────────────────────────────────────────────
+function getMinSalaryMan(salaryStr) {
+// "月給18万〜40万円" -> 18
+const m = String(salaryStr || "").match(/(\d+)\s*万/);
+return m ? parseInt(m[1], 10) : 0;
+    }
+const JOB_TYPE_KEYWORDS = {
+'営業職': ['営業', 'セールス', 'インサイドセールス'],
+'事務・管理': ['事務', '管理', 'バックオフィス', '総務', '人事', '経理', 'アドバイザー'],
+'販売・サービス': ['販売', 'スタッフ', '接客', 'サービス', 'インストア'],
+'施工管理': ['施工', '現場', '設備', '建設', 'グランドハンドリング'],
+'ドライバー': ['ドライバー', '運転', '配送', 'タクシー'],
+    };
+function matchesJobType(job, type) {
+const kws = JOB_TYPE_KEYWORDS[type] || [];
+const hay = `${job.title || ''} ${job.company || ''} ${(job.tags || []).join(' ')} ${(job.desc || '')}`;
+return kws.some(kw => hay.includes(kw));
+    }
+function applyFilters(resetPage) {
+const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+const location = document.getElementById('locationFilter').value;
+const sortVal = document.getElementById('sortSelect').value;
+const activeTags = [...document.querySelectorAll('.filter-tag.active')].map(t => t.dataset.tag);
+const selSalary = [...document.querySelectorAll('[data-salary]:checked')].map(el => parseInt(el.dataset.salary, 10));
+const selTypes = [...document.querySelectorAll('.job-type-cb:checked')].map(el => el.dataset.type);
+const selEmployment = [...document.querySelectorAll('.employment-cb:checked')].map(el => el.dataset.employment);
+let filtered = allJobs.filter(job => {
+if (keyword) {
+const targets = [job.title, job.company, job.desc].map(v => String(v || '').toLowerCase());
+if (!targets.some(s => s.includes(keyword))) return false;
+        }
+if (location) {
+const pref = extractPrefecture(job.location);
+if (pref !== location) return false;
+        }
+if (activeTags.length) {
+const jobTags = job.tags || [];
+if (!activeTags.some(at => jobTags.some(t => String(t).includes(at)))) return false;
+        }
+if (selSalary.length) {
+const min = getMinSalaryMan(job.salary);
+if (!selSalary.some(s => min >= s)) return false;
+        }
+if (selTypes.length) {
+if (!selTypes.some(t => matchesJobType(job, t))) return false;
+        }
+if (selEmployment.length) {
+const et = getEmploymentType(job);
+if (!selEmployment.includes(et)) return false;
+        }
+return true;
+      });
+// Sort (stable grouping)
+if (sortVal === 'new') {
+filtered = filtered.filter(j => j.isNew).concat(filtered.filter(j => !j.isNew));
+      } else {
+filtered = filtered.filter(j => j.featured).concat(filtered.filter(j => !j.featured));
+      }
+lastFiltered = filtered;
+document.getElementById('displayCount').textContent = filtered.length;
+if (resetPage) currentPage = 1;
+renderPage(currentPage);
+    }
+function resetFilters() {
+document.getElementById('searchInput').value = '';
+document.getElementById('locationFilter').value = '';
+document.querySelectorAll('.filter-tag.active').forEach(el => el.classList.remove('active'));
+document.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+document.getElementById('sortSelect').value = 'featured';
+applyFilters(true);
+    }
+// ── Pagination ─────────────────────────────────────────────
+function renderPage(page) {
+const total = lastFiltered.length;
+if (!total) {
+document.getElementById('jobList').innerHTML = '<div class="loading" style="padding:40px">条件に合う求人が見つかりませんでした。</div>';
+document.getElementById('pagination').innerHTML = '';
+return;
+      }
+const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+currentPage = Math.min(Math.max(1, page), totalPages);
+const start = (currentPage - 1) * PAGE_SIZE;
+const pageItems = lastFiltered.slice(start, start + PAGE_SIZE);
+renderJobs(pageItems);
+renderPagination(totalPages);
+    }
+function renderPagination(totalPages) {
+const el = document.getElementById('pagination');
+if (totalPages <= 1) { el.innerHTML = ''; return; }
+const btn = (label, page, active, disabled) => `
+        <button class="page-btn${active ? ' active' : ''}" ${disabled ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''} onclick="goPage(${page})">${esc(label)}</button>
+      `;
+const pages = [];
+const windowSize = 2;
+const start = Math.max(1, currentPage - windowSize);
+const end = Math.min(totalPages, currentPage + windowSize);
+pages.push(btn('前へ', currentPage - 1, false, currentPage === 1));
+pages.push(btn('1', 1, currentPage === 1, false));
+if (start > 2) pages.push(`<span style="display:flex;align-items:center;color:var(--text-muted);padding:0 6px">…</span>`);
+for (let p = start; p <= end; p++) {
+if (p === 1 || p === totalPages) continue;
+pages.push(btn(String(p), p, currentPage === p, false));
+      }
+if (end < totalPages - 1) pages.push(`<span style="display:flex;align-items:center;color:var(--text-muted);padding:0 6px">…</span>`);
+if (totalPages > 1) pages.push(btn(String(totalPages), totalPages, currentPage === totalPages, false));
+pages.push(btn('次へ', currentPage + 1, false, currentPage === totalPages));
+el.innerHTML = pages.join('');
+    }
+function goPage(p) {
+renderPage(p);
+window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+// ── Rendering ──────────────────────────────────────────────
+function renderJobs(jobs) {
+const list = document.getElementById('jobList');
+list.innerHTML = jobs.map(job => `
+        <div class="job-card${job.featured ? ' featured' : ''}" onclick="openDetail(${esc(job.id)})">
+${job.isNew ? '<div class="new-badge">NEW</div>' : ''}
+          <div class="card-top">
+            <div>
+              <div class="job-company">${esc(job.company)}</div>
+              <div class="job-title">${esc(job.title)}</div>
+            </div>
+            <div class="job-salary">${esc(job.salary)}<small>想定月給</small></div>
+          </div>
+          <div class="job-tags">${(job.tags || []).map(t => `<span class="job-tag">${esc(t)}</span>`).join('')}</div>
+          <div class="job-meta"><div class="meta-item">📍 ${esc(job.location)}</div></div>
+          <div class="card-actions" onclick="event.stopPropagation()">
+            <button class="btn-detail" onclick="openDetail(${esc(job.id)})">詳細を見る</button>
+            <button class="btn-apply" onclick="openCalendar()">応募する</button>
+          </div>
+        </div>`).join('');
+    }
+function openDetail(id) {
+currentJob = allJobs.find(j => String(j.id) === String(id));
+if (!currentJob) return;
+document.getElementById('modalCompany').textContent = currentJob.company || '';
+document.getElementById('modalTitle').textContent = currentJob.title || '';
+document.getElementById('modalSalary').textContent = currentJob.salary || '';
+document.getElementById('modalLocation').textContent = currentJob.location || '';
+document.getElementById('modalDesc').textContent = currentJob.desc || '';
+document.getElementById('modalTags').innerHTML = (currentJob.tags || []).map(t => `<span class="job-tag">${esc(t)}</span>`).join('');
+document.getElementById('modalTable').innerHTML = (currentJob.conditions || []).map(([th, td]) =>
+`<tr><th>${esc(th)}</th><td>${esc(td)}</td></tr>`).join('');
+openModal('detailModal');
+    }
+function openApplyFromDetail() {
+if (!currentJob) return;
+closeModal('detailModal');
+openApply(currentJob.id);
+    }
+function openApply(id) {
+const job = allJobs.find(j => String(j.id) === String(id));
+if (!job) return;
+currentJob = job;
+const title = `${job.title || ''}`.trim();
+document.getElementById('applyJobTitle').textContent = title;
+document.getElementById('f_jobTitle').value = title;
+hideApplyAlert();
+openModal('applyModal');
+    }
+// ── Apply submit ───────────────────────────────────────────
+function showApplyAlert(msg) {
+const el = document.getElementById('applyAlert');
+el.textContent = msg;
+el.classList.add('show');
+    }
+function hideApplyAlert() {
+const el = document.getElementById('applyAlert');
+el.classList.remove('show');
+el.textContent = '';
+    }
+function setSubmitting(isSubmitting) {
+const modal = document.querySelector('#applyModal .modal');
+const btn = document.getElementById('applySubmitBtn');
+if (isSubmitting) {
+modal.classList.add('form-submitting');
+btn.textContent = '送信中...';
+      } else {
+modal.classList.remove('form-submitting');
+btn.textContent = 'フォームを送信';
+      }
+    }
+async function submitApply() {
+hideApplyAlert();
+const payload = {
+jobTitle: document.getElementById('f_jobTitle').value.trim(),
+name: document.getElementById('f_name').value.trim(),
+age: document.getElementById('f_age').value,
+phone: document.getElementById('f_phone').value.trim(),
+email: document.getElementById('f_email').value.trim(),
+currentStatus: document.getElementById('f_status').value,
+note: document.getElementById('f_note').value.trim(),
+      };
+if (!payload.jobTitle || !payload.name || !payload.age || !payload.phone || !payload.email) {
+showApplyAlert('必須項目（お名前・年齢・電話番号・メールアドレス）をご入力ください。');
+return;
+      }
+if (!GAS_URL || GAS_URL.length < 10) {
+showApplyAlert('現在はサンプル表示のためフォーム送信はできません。LINEでご相談ください。');
+return;
+      }
+setSubmitting(true);
+try {
+const res = await fetch(GAS_URL, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(payload),
+        });
+const data = await res.json().catch(() => null);
+if (!res.ok || !data || data.status !== 'ok') {
+throw new Error((data && data.message) ? data.message : '送信に失敗しました');
+        }
+closeModal('applyModal');
+alert('応募を受け付けました。担当者よりご連絡します。');
+document.getElementById('applyForm').reset();
+      } catch (err) {
+showApplyAlert(`送信に失敗しました。LINEからもご相談いただけます。\n${(err && err.message) ? err.message : String(err)}`);
+      } finally {
+setSubmitting(false);
+      }
+    }
+// ── Events ────────────────────────────────────────────────
+document.querySelectorAll('.modal-overlay').forEach(el =>
+el.addEventListener('click', e => { if (e.target === el) closeModal(el.id); })
+    );
+document.getElementById('searchBtn').addEventListener('click', () => applyFilters(true));
+document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') applyFilters(true); });
+document.getElementById('locationFilter').addEventListener('change', () => applyFilters(true));
+document.getElementById('sortSelect').addEventListener('change', () => applyFilters(true));
+document.querySelectorAll('[data-salary], .job-type-cb').forEach(cb => cb.addEventListener('change', () => applyFilters(true)));
+fetchJobs();
+</script>
+</body>
+</html>
